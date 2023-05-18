@@ -19,7 +19,7 @@ client_id = f'python-mqtt-{random.randint(0, 100)}'
 
 # Load your service account credentials from the JSON key file
 SERVICE_ACCOUNT_FILE = './single-portal-370222-e246ff8e255b.json'
-SCOPES = ['https://www.googleapis.com/auth/documents']
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 service = discovery.build('sheets', 'v4', credentials=credentials)
