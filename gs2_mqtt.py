@@ -22,7 +22,7 @@ SERVICE_ACCOUNT_FILE = './single-portal-370222-e246ff8e255b.json'
 SCOPES = ['https://www.googleapis.com/auth/documents']
 
 credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-docs_service = discovery.build('sheets', 'v4', credentials=credentials)
+service = discovery.build('sheets', 'v4', credentials=credentials)
 
 sheet_id = '1ZXWPNRMMosoQASPTHYDKGM_nKW3Wdc4OCZe_6YiHVCY'
 
