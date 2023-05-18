@@ -60,9 +60,6 @@ def subscribe(client: mqtt_client):
                 param = payload['param']
                 # if 'sheet' in payload:
                 value = float(payload['value'])
-                global column_mapping
-                if not param in column_mapping:
-                    create_column(service, sheet_id, param)
                 # Append values to a column
                 values = [value]
 
