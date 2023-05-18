@@ -62,6 +62,7 @@ def subscribe(client: mqtt_client):
                 value = float(payload['value'])
                 # Append values to a column
                 values = [value]
+                print(payload)
 
                 if 'sheet' in payload:
                     sheet_name = payload['sheet']
