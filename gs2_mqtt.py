@@ -58,12 +58,16 @@ def subscribe(client: mqtt_client):
                 payload = json.loads(payload)
 
                 param = payload['param']
-                # if 'sheet' in payload:
+
                 value = float(payload['value'])
                 # Append values to a column
                 values = [value]
 
-                append_values_to_column(service, sheet_id, param, values)
+                if 'sheet' in payload:
+                    sheet_name = payload['sheet']
+                    append_values_to_column(service, sheet_id, param, values, sheet_name)
+                else:
+                    append_values_to_column(service, sheet_id, param, values)
 
 
             except Exception as e:
