@@ -58,6 +58,7 @@ def subscribe(client: mqtt_client):
                 payload = json.loads(payload)
 
                 param = payload['param']
+                # if 'sheet' in payload:
                 value = float(payload['value'])
                 global column_mapping
                 if not param in column_mapping:
@@ -102,12 +103,10 @@ def push_states():
                     client.publish('fans',k.upper())
                     time.sleep(wait)
                     wait += 2
-
-
-def get_column_letter(service, spreadsheet_id, key):
+def get_column_letter(service, spreadsheet_id, key, sheet_name='Sheet1'):
     try:
         # Get the data in the first row
-        range_ = "1:1"
+        range_ = f"{sheet_name}!1:1"
         result = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_).execute()
         values = result.get('values', [])
 
@@ -134,14 +133,14 @@ def get_column_letter(service, spreadsheet_id, key):
         print(f"An error occurred: {error}")
         return None
 
-def create_column(service, spreadsheet_id, key):
+def create_column(service, spreadsheet_id, key, sheet_name='Sheet1'):
     try:
-        col_letter = get_column_letter(service, spreadsheet_id, key)
+        col_letter = get_column_letter(service, spreadsheet_id, key, sheet_name)
 
         # If the column does not exist, create it
         if not col_letter:
             # Get the data in the first row
-            range_ = "1:1"
+            range_ = f"{sheet_name}!1:1"
             result = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_).execute()
             values = result.get('values', [])
 
@@ -149,7 +148,7 @@ def create_column(service, spreadsheet_id, key):
             col_index = len(values[0]) if values else 0
             col_letter = chr(65 + col_index)  # Convert the index to a character starting from 'A'
 
-            range_ = f"{col_letter}1:{col_letter}1"  # This will generate a range like 'A1:A1' or 'B1:B1', etc.
+            range_ = f"{sheet_name}!{col_letter}1:{col_letter}1"  # This will generate a range like 'A1:A1' or 'B1:B1', etc.
             request = service.spreadsheets().values().update(
                 spreadsheetId=spreadsheet_id,
                 range=range_,
@@ -168,16 +167,19 @@ def create_column(service, spreadsheet_id, key):
         print(f"An error occurred: {error}")
 
 
-def append_values_to_column(service, spreadsheet_id, key, values):
+def append_values_to_column(service, spreadsheet_id, key, values, sheet_name='Sheet1'):
     try:
         # Get the corresponding column letter
 #         col_letter = column_mapping.get(key)
-        col_letter = get_column_letter(service, spreadsheet_id, key)
+        col_letter = get_column_letter(service, spreadsheet_id, key, sheet_name)
         if not col_letter:
-            print(f"No column found for the key: {key}")
-            return
+            create_column(service, spreadsheet_id, key, sheet_name)
+            col_letter = get_column_letter(service, spreadsheet_id, key, sheet_name)
+            if not col_letter:
+                print(f"No column found for the key: {key}")
+                return
 
-        range_ = f"{col_letter}:{col_letter}"  # This will generate a range like 'A:A' or 'B:B', etc.
+        range_ = f"{sheet_name}!{col_letter}:{col_letter}"  # This will generate a range like 'A:A' or 'B:B', etc.
 
         # Get the data in the column
         result = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_).execute()
@@ -187,7 +189,7 @@ def append_values_to_column(service, spreadsheet_id, key, values):
         next_row = len(rows) + 1
 
         for value in values:
-            range_ = f"{col_letter}{next_row}:{col_letter}{next_row}"  # This will generate a range like 'A2:A2' or 'B3:B3', etc.
+            range_ = f"{sheet_name}!{col_letter}{next_row}:{col_letter}{next_row}"  # This will generate a range like 'A2:A2' or 'B3:B3', etc.
             request = service.spreadsheets().values().update(
                 spreadsheetId=spreadsheet_id,
                 range=range_,
@@ -203,7 +205,6 @@ def append_values_to_column(service, spreadsheet_id, key, values):
 
     except HttpError as error:
         print(f"An error occurred: {error}")
-
 # Create columns
 
 
@@ -227,7 +228,6 @@ if __name__ == '__main__':
             m += 1
             if m == 60:
                 m = 0
-
             # if not (m%30):
             #     pass
             startTime = time.time()
