@@ -27,7 +27,6 @@ def publish(client):
         color = colors[msg_count % 3]
         msg = str(random.randint(1, 255))
         result = client.publish(color, msg)
-
         # Publish 0 to other colors
         for other_color in colors:
             if other_color != color:
