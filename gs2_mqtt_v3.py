@@ -56,21 +56,24 @@ def subscribe(client: mqtt_client):
                 payload = msg.payload.decode()
                 payload = payload.replace(",\"","\",\"")
                 payload = payload.replace("\"\"","\"")
-                payload = json.loads(payload)
-
-                for is_param in all_params:
-                    if is_param in payload['values']:
-                        param = is_param
-                        value = payload['value'][param]
-                        append_values_to_column(service, sheet_id, param, values, sheet_name)
-                # Append values to a column
-                values = [value]
-                print(payload)
+                data = json.loads(payload)
+                # append_to_row(service, sheet_id, data["sheet"], data)
+                #
+                # for is_param in all_params:
+                #     if is_param in payload['values']:
+                #         param = is_param
+                #         value = payload['value'][param]
+                #         append_values_to_column(service, sheet_id, param, values, sheet_name)
+                # # Append values to a column
+                # values = [value]
+                # print(payload)
                 if 'sheet' in payload:
-                    sheet_name = payload['sheet']
-                    append_values_to_column(service, sheet_id, param, values, sheet_name)
+                    sheet_name = data['sheet']
+                    # append_values_to_column(service, sheet_id, param, values, sheet_name)
+                    append_to_row(service, sheet_id, sheet_name, data)
                 else:
-                    append_values_to_column(service, sheet_id, param, values)
+                    # append_values_to_column(service, sheet_id, param, values)
+                    append_to_row(service, sheet_id, "Sheet1", data)
             except Exception as e:
                 print(e)
                 pass
