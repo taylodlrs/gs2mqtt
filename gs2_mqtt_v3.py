@@ -57,6 +57,7 @@ def subscribe(client: mqtt_client):
                 payload = payload.replace(",\"","\",\"")
                 payload = payload.replace("\"\"","\"")
                 data = json.loads(payload)
+                print('DATA:',data,'\n')
                 # append_to_row(service, sheet_id, data["sheet"], data)
                 #
                 # for is_param in all_params:
