@@ -6,7 +6,7 @@ from paho.mqtt import client as mqtt_client
 broker = '44.206.62.89'
 port = 1883
 client_id = f'python-mqtt-{random.randint(0, 100)}'
-colors = ["red", "green", "blue"]
+colors = ["red", "green", "blue", "off"]
 
 def connect_mqtt() -> mqtt_client:
     def on_connect(client, userdata, flags, rc):
@@ -23,10 +23,13 @@ def connect_mqtt() -> mqtt_client:
 def publish(client):
     msg_count = 0
     while True:
-        time.sleep(30)
-        color = colors[msg_count % 3]
+        # for min_ in range(5)
+        time.sleep(120)
+        color = colors[msg_count % 4]
         msg = str(random.randint(1, 255))
-        result = client.publish(color, msg)
+        msg = "255"
+        if color != 'off':
+            result = client.publish(color, msg)
         # Publish 0 to other colors
         for other_color in colors:
             if other_color != color:
