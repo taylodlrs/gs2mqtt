@@ -435,7 +435,7 @@ if __name__ == '__main__':
         client.loop()
         if first:
             print('HELLO')
-            data = {"id":"3", "time":{"h":"15","m":"34","s":"7"}, "values":{"param1":"87.1", "param2":"22"}, "sheet":"Sheet1"}
+            data = {"id":"7","pH":"100","sheet":"Sheet1"}
             append_to_row(service, sheet_id, data["sheet"], data)
             first = False
         elapsedTime = time.time() - startTime
