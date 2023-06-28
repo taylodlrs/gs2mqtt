@@ -411,7 +411,8 @@ def append_to_row(service, spreadsheet_id, sheet_name, data):
         elif column_name == "device_id":
             value = data["id"]
         else:  # For any other column
-            value = data[column_name]
+            if not column_name == "id":
+                value = data[column_name]
 
         range_ = f"{sheet_name}!{column_letter}{last_empty_row}"
         batch_data.append({"range": range_, "values": [[value]]})
