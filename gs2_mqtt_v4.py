@@ -378,7 +378,7 @@ def append_to_row(service, spreadsheet_id, sheet_name, data):
 
 def append_to_row(service, spreadsheet_id, sheet_name, data):
     # Define the column order
-
+    print(data)
     column_order = ["real_time", "device_id"]
     if 'sheet' in data:
         del data['sheet']
@@ -411,7 +411,7 @@ def append_to_row(service, spreadsheet_id, sheet_name, data):
         elif column_name == "device_id":
             value = data["id"]
         else:  # For any other column
-            value = data["values"][column_name]
+            value = data[column_name]
 
         range_ = f"{sheet_name}!{column_letter}{last_empty_row}"
         batch_data.append({"range": range_, "values": [[value]]})
