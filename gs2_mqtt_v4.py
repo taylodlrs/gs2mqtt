@@ -385,7 +385,8 @@ def append_to_row(service, spreadsheet_id, sheet_name, data):
     if 'time' in data:
         del data['time']
 
-    column_order += list(data.keys())
+    not_values = ['sheet', 'time', 'id']
+    column_order += [k for k in list(data.keys()) if not k in not_values]
 
     # Create columns if they don't exist
     for column_name in column_order:
@@ -411,8 +412,7 @@ def append_to_row(service, spreadsheet_id, sheet_name, data):
         elif column_name == "device_id":
             value = data["id"]
         else:  # For any other column
-            if not column_name == "id":
-                value = data[column_name]
+            value = data[column_name]
 
         range_ = f"{sheet_name}!{column_letter}{last_empty_row}"
         batch_data.append({"range": range_, "values": [[value]]})
