@@ -378,7 +378,14 @@ def append_to_row(service, spreadsheet_id, sheet_name, data):
 
 def append_to_row(service, spreadsheet_id, sheet_name, data):
     # Define the column order
-    column_order = ["real_time", "rtc_time", "device_id"] + list(data["values"].keys())
+
+    column_order = ["real_time", "device_id"]
+    if 'sheet' in data:
+        del data['sheet']
+    if 'time' in data:
+        del data['time']
+
+    column_order += list(data.keys())
 
     # Create columns if they don't exist
     for column_name in column_order:
@@ -399,7 +406,7 @@ def append_to_row(service, spreadsheet_id, sheet_name, data):
     for column_name in column_order[1:]:
         column_letter = get_column_letter(service, spreadsheet_id, column_name, sheet_name)
         if column_name == "rtc_time":
-            time_str = "{}:{}:{}".format(data["time"]["h"], data["time"]["m"], data["time"]["s"])
+            time_str = ""
             value = time_str
         elif column_name == "device_id":
             value = data["id"]
